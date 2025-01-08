@@ -42,17 +42,21 @@
       font-size: 18px;
     }
     #day-nav button {
-      padding: 10px 20px;
+      padding: 10px;
       margin: 5px;
-      font-size: 16px;
+      font-size: 24px;
       cursor: pointer;
       border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
+      background: none;
+      color: #007BFF;
     }
     #day-nav button:hover {
-      background-color: #0056b3;
+      color: #0056b3;
+    }
+    #current-day {
+      font-size: 24px;
+      margin: 0 10px;
+      color: #333;
     }
   </style>
 </head>
@@ -62,9 +66,9 @@
   <div id="current-task">Loading current task...</div>
 
   <div id="day-nav">
-    <button id="prev-day">← Previous Day</button>
+    <button id="prev-day">&larr;</button>
     <span id="current-day">Loading...</span>
-    <button id="next-day">Next Day →</button>
+    <button id="next-day">&rarr;</button>
   </div>
 
   <table>
@@ -137,7 +141,6 @@
 
     // Task Notification Logic
     function updateTask(hours, minutes) {
-      const currentTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
       const todaySchedule = schedule[currentDay];
 
       let currentTask = 'No Task';
