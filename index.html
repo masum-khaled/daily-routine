@@ -304,22 +304,28 @@
       const taskTable = document.getElementById('task-table');
       taskTable.innerHTML = '';
 
-      schedule[day].forEach((item, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.start} - ${item.end}</td>
-          <td>${item.task}</td>
-          <td>
-            <button class="action-btn edit-btn" onclick="editTask(${index})">
-              <i class="fas fa-pencil-alt icon"></i>
-            </button>
-            <button class="action-btn delete-btn" onclick="deleteTask(${index})">
-              <i class="fas fa-trash icon"></i>
-            </button>
-          </td>
-        `;
-        taskTable.appendChild(row);
-      });
+      if (schedule[day].length === 0) {
+        const noTaskRow = document.createElement('tr');
+        noTaskRow.innerHTML = `<td colspan="3">No tasks scheduled for today</td>`;
+        taskTable.appendChild(noTaskRow);
+      } else {
+        schedule[day].forEach((item, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.start} - ${item.end}</td>
+            <td>${item.task}</td>
+            <td>
+              <button class="action-btn edit-btn" onclick="editTask(${index})">
+                <i class="fas fa-pencil-alt icon"></i>
+              </button>
+              <button class="action-btn delete-btn" onclick="deleteTask(${index})">
+                <i class="fas fa-trash icon"></i>
+              </button>
+            </td>
+          `;
+          taskTable.appendChild(row);
+        });
+      }
 
       const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       document.getElementById('current-day').textContent = dayNames[day];
@@ -373,30 +379,29 @@
       loadTasks(currentDay);
     };
 
-    // Save task
-    document.getElementById('task-form').addEventListener('submit', (e) => {
-      e.preventDefault();
+    // Save task (add or edit)
+    document.getElementById('task-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+
       const startTime = document.getElementById('start-time').value;
       const endTime = document.getElementById('end-time').value;
       const taskName = document.getElementById('task-name').value;
 
-      const task = { start: startTime, end: endTime, task: taskName };
-
-      if (editIndex !== null) {
-        schedule[currentDay][editIndex] = task;
+      if (editIndex === null) {
+        schedule[currentDay].push({ start: startTime, end: endTime, task: taskName });
       } else {
-        schedule[currentDay].push(task);
+        schedule[currentDay][editIndex] = { start: startTime, end: endTime, task: taskName };
       }
 
       saveSchedule();
-      closeModal();
       loadTasks(currentDay);
+      closeModal();
     });
 
-    // Close modal on cancel
+    // Cancel modal
     document.getElementById('cancel-button').addEventListener('click', closeModal);
 
-    // Initialize
+    // Initial load
     loadTasks(currentDay);
     setInterval(updateClock, 1000);
   </script>
