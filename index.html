@@ -241,7 +241,7 @@
     let currentDay = new Date().getDay();
     let editIndex = null;
 
-    // Default schedule
+    // Default schedule (preloaded tasks)
     const defaultSchedule = {
       0: [{ start: "17:00", end: "23:00", task: "Work" }],
       1: [{ start: "08:00", end: "18:00", task: "School" }],
@@ -394,11 +394,13 @@
     });
 
     // Cancel modal
-    document.getElementById('cancel-button').addEventListener('click', closeModal);
+    document.getElementById('cancel-button').addEventListener('click', () => {
+      closeModal();
+    });
 
-    // Initial load
-    loadTasks(currentDay);
+    // Initialize the page
     setInterval(updateClock, 1000);
+    loadTasks(currentDay);
   </script>
 </body>
 </html>
