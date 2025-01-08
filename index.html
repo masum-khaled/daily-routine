@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Scheduler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 20px;
+    }
+    #clock {
+      font-size: 48px;
+      margin-top: 20px;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    #current-task {
+      font-size: 24px;
+      margin-top: 20px;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <h1>Task Scheduler</h1>
+  <div id="clock"></div>
+  <div id="current-task">Loading current task...</div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Activity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>8:00 AM - 6:00 PM</td><td>School</td></tr>
+      <tr><td>6:00 PM - 7:00 PM</td><td>Break/Rest</td></tr>
+      <tr><td>7:00 PM - 9:00 PM</td><td>Web Development</td></tr>
+      <tr><td>9:00 PM - 11:00 PM</td><td>Personal Time</td></tr>
+      <tr><td>5:00 PM - 11:00 PM</td><td>Work</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Timer Clock
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+      document.getElementById('clock').textContent = formattedTime;
+
+      updateTask(hours, minutes);
+    }
+
+    // Task Notification Logic
+    const schedule = [
+      { start: '08:00', end: '18:00', task: 'School' },
+      { start: '18:00', end: '19:00', task: 'Break/Rest' },
+      { start: '19:00', end: '21:00', task: 'Web Development' },
+      { start: '21:00', end: '23:00', task: 'Personal Time' },
+      { start: '17:00', end: '23:00', task: 'Work (Tue, Thu, Fri, Sun)' }
+    ];
+
+    function updateTask(hours, minutes) {
+      const currentTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      const today = new Date();
+      const isWorkDay = [2, 4, 5, 0].includes(today.getDay()); // Tue, Thu, Fri, Sun
+
+      let currentTask = 'No Task';
+      for (const item of schedule) {
+        const [startHour, startMinute] = item.start.split(':').map(Number);
+        const [endHour, endMinute] = item.end.split(':').map(Number);
+
+        const start = new Date();
+        start.setHours(startHour, startMinute, 0);
+
+        const end = new Date();
+        end.setHours(endHour, endMinute, 0);
+
+        if (today >= start && today < end) {
+          if (item.task.includes('Work') && !isWorkDay) continue; // Skip Work on non-work days
+          currentTask = item.task;
+          break;
+        }
+      }
+
+      document.getElementById('current-task').textContent = `Current Task: ${currentTask}`;
+      notifyUser(currentTask);
+    }
+
+    // Notification Function
+    function notifyUser(task) {
+      if (!('Notification' in window)) return;
+
+      if (Notification.permission === 'granted') {
+        new Notification(`Task Reminder`, { body: `It's time for: ${task}` });
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification(`Task Reminder`, { body: `It's time for: ${task}` });
+          }
+        });
+      }
+    }
+
+    // Initialize
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
