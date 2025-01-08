@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customizable Task Scheduler</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,7 +19,7 @@
     table {
       margin: 20px auto;
       border-collapse: collapse;
-      width: 80%;
+      width: 90%;
     }
     table, th, td {
       border: 1px solid #ddd;
@@ -81,7 +80,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      color: white;
+      font-size: 16px;
     }
     .edit-btn {
       background-color: #28a745; /* Success */
@@ -244,12 +243,12 @@
 
     // Default schedule
     const defaultSchedule = {
-      0: [],
+      0: [{ start: "17:00", end: "23:00", task: "Work" }],
       1: [{ start: "08:00", end: "18:00", task: "School" }],
       2: [{ start: "17:00", end: "23:00", task: "Work" }],
       3: [{ start: "08:00", end: "18:00", task: "School" }],
       4: [{ start: "17:00", end: "23:00", task: "Work" }],
-      5: [],
+      5: [{ start: "09:00", end: "17:00", task: "Web Development" }],
       6: [{ start: "17:00", end: "23:00", task: "Work" }],
     };
 
@@ -315,12 +314,8 @@
             <td>${item.start} - ${item.end}</td>
             <td>${item.task}</td>
             <td>
-              <button class="action-btn edit-btn" onclick="editTask(${index})">
-                <i class="fas fa-pencil-alt icon"></i>
-              </button>
-              <button class="action-btn delete-btn" onclick="deleteTask(${index})">
-                <i class="fas fa-trash icon"></i>
-              </button>
+              <button class="action-btn edit-btn" onclick="editTask(${index})">Edit</button>
+              <button class="action-btn delete-btn" onclick="deleteTask(${index})">Delete</button>
             </td>
           `;
           taskTable.appendChild(row);
